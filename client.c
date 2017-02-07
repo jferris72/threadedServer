@@ -5,29 +5,82 @@
 #include<netinet/in.h>
 #include<arpa/inet.h>
 #include<unistd.h>
+#include "timer.h"
 
-int main()
+int thread_count;  
+long port;
+long arraySize;
+int* seed;
+pthread_mutex_t mutex;
+
+void *readWriteMessage(void* rank);  /* Thread function */
+
+int main(int argc, char* argv[])
 {
+
+	long       thread;  /* Use long in case of a 64-bit system */
+	pthread_t* thread_handles; 
+	int i;
+	double start, finish, elapsed;	
+
+	thread_count = 1000; 
+	port = strtol(argv[1], NULL, 10);
+	arraySize = strtol(argv[2], NULL, 10);
+	/* Intializes random number generators */
+	seed = malloc(thread_count*sizeof(int));
+	for (i = 0; i < thread_count; i++)
+		seed[i] = i;
+   
+	thread_handles = malloc (thread_count*sizeof(pthread_t)); 
+
+	GET_TIME(start); 
+	for (thread = 0; thread < thread_count; thread++)  
+		pthread_create(&thread_handles[thread], NULL, readWriteMessage, (void*) thread);  
+
+	for (thread = 0; thread < thread_count; thread++) 
+		pthread_join(thread_handles[thread], NULL); 
+	GET_TIME(finish);
+
+	elapsed = finish - start;
+
+	free(thread_handles);
+
+	return 0;
+}
+
+void *readWriteMessage(void* rank) {
+
+	long my_rank = (long) rank;
+	
+	// Find a random position in theArray for read or write
+	uint16_t pos = rand_r(&seed[my_rank]) % arraySize; //random position to read/write from in array
+	int randNum = rand_r(&seed[my_rank]) % 20;	// write with 5% probability
+
+	uint8_t readOrWrite; //1 for write 0 for read
+
 	struct sockaddr_in sock_var;
 	int clientFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
-	char str_clnt[20],str_ser[20];
+	char str_ser[20];
 
 	sock_var.sin_addr.s_addr=inet_addr("127.0.0.1");
-	sock_var.sin_port=3000;
+	sock_var.sin_port=port;
 	sock_var.sin_family=AF_INET;
 
-	if(connect(clientFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var))>=0)
+	if(connect(clientFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var))>=0) 
 	{
-		printf("Connected to server %dn",clientFileDescriptor);
-		printf("nEnter Srting to send");
-		scanf("%s",str_clnt);
-		write(clientFileDescriptor,str_clnt,20);
-		read(clientFileDescriptor,str_ser,20);
-		printf("String from Server: %s",str_ser);
-		close(clientFileDescriptor);
+		if (randNum >= 19) { // 5% are write operations, others are reads
+			readOrWrite = 1;
+			write(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite));
+			write(clientFileDescriptor, &pos, sizeof(pos));
+		} else {
+			readOrWrite = 0;
+			write(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite));
+			read(clientFileDescriptor, str_ser, sizeof(str_ser));
+		}
 	}
 	else{
 		printf("socket creation failed");
 	}
-	return 0;
+		
+	return NULL;
 }

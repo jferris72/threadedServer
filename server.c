@@ -13,9 +13,9 @@ void *ServerEcho(void *args)
 	char str[20];
 
 	read(clientFileDescriptor,str,20);
-	printf("nreading from client:%s",str);
+	printf("nreading from client:%s\n",str);
 	write(clientFileDescriptor,str,20);
-	printf("nechoing back to client");
+	printf("nechoing back to client\n");
 	close(clientFileDescriptor);
 }
 
@@ -28,19 +28,19 @@ int main()
 	int i;
 	pthread_t t[20];
 
-	sock_var.sin_addr.s_addr=inet_addr("127.0.0.1");
+	sock_var.sin_addr.s_addr;
 	sock_var.sin_port=3000;
 	sock_var.sin_family=AF_INET;
 	if(bind(serverFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var))>=0)
 	{
-		printf("nsocket has been created");
+		printf("nsocket has been created\n");
 		listen(serverFileDescriptor,2000); 
 		while(1)        //loop infinity
 		{
 			for(i=0;i<20;i++)      //can support 20 clients at a time
 			{
 				clientFileDescriptor=accept(serverFileDescriptor,NULL,NULL);
-				printf("nConnected to client %dn",clientFileDescriptor);
+				printf("nConnected to client %d\n",clientFileDescriptor);
 				pthread_create(&t,NULL,ServerEcho,(void *)clientFileDescriptor);
 			}
 		}

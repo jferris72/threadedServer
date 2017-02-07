@@ -12,8 +12,8 @@ int main()
 	int clientFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
 	char str_clnt[20],str_ser[20];
 
-	sock_var.sin_addr.s_addr=inet_addr("127.0.0.1");
-	sock_var.sin_port=3000;
+	sock_var.sin_addr.s_addr=inet_addr("142.244.5.74");
+	sock_var.sin_port=2222;
 	sock_var.sin_family=AF_INET;
 
 	if(connect(clientFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var))>=0)

@@ -7,6 +7,8 @@
 #include<unistd.h>
 #include "timer.h"
 
+#define STR_LEN 64
+
 int thread_count;  
 long port;
 long arraySize;
@@ -60,7 +62,7 @@ void *readWriteMessage(void* rank) {
 
 	struct sockaddr_in sock_var;
 	int clientFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
-	char str_ser[5];
+	char str_ser[STR_LEN];
 
 // <<<<<<< HEAD
 // 	sock_var.sin_addr.s_addr=inet_addr("142.244.5.74");
@@ -82,7 +84,7 @@ void *readWriteMessage(void* rank) {
 			readOrWrite = 0;
 			send(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite),0);
 			send(clientFileDescriptor, &pos, sizeof(pos),0);
-			recv(clientFileDescriptor, str_ser, 5,0);
+			recv(clientFileDescriptor, str_ser, STR_LEN,0);
 			printf("%s\n", str_ser);
 		}
 	}

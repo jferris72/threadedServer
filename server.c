@@ -7,8 +7,12 @@
 #include<unistd.h>
 #include<pthread.h>
 
+#define STR_LEN 64
+
 long port;
 long arraySize;
+char **theArray;
+pthread_mutex_t mutex;
 
 void *ServerEcho(void *args)
 {
@@ -16,7 +20,7 @@ void *ServerEcho(void *args)
 	//char str[20];
 
 	// recieve thead id
-	char str_ser[5];
+	char str_ser[STR_LEN];
 	bzero(str_ser, 5);
 	strncpy(str_ser, "hello", 5);
 	uint8_t isRead = 0;
@@ -26,11 +30,13 @@ void *ServerEcho(void *args)
 	recv(clientFileDescriptor,&arrayPosNBO,sizeof(arrayPosNBO), 0);
 	arrayPos = ntohs(arrayPosNBO);
 
-	if(!isRead){
-		send(clientFileDescriptor, str_ser, 5, 0);		
+	if (!isRead) {
+		send(clientFileDescriptor, theArray[arrayPos], STR_LEN, 0);		
 		printf("Read request\n");
-	}else{
-		printf("Write request\n");
+	} else {
+		pthread_mutex_lock(&mutex); 
+		sprintf(theArray[arrayPos],"String %d has been modified by a write request", arrayPos);		
+		pthread_mutex_unlock(&mutex);
 	}
 	
 	//printf("array position: %d\n",(int) arrayPos);
@@ -66,14 +72,21 @@ int main(int argc, char* argv[])
 	sock_var.sin_family=AF_INET;
 	printf("Hello\n");
 
-	if(bind(serverFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var))>=0)
-	{
+	theArray = malloc(sizeof(*theArray)*arraySize);
+	for (i = 0; i < arraySize; i++) {
+		theArray[i] = malloc(sizeof(*theArray[i]) * STR_LEN);
+	}
+
+	for (i = 0; i < arraySize; i ++) {
+		sprintf(theArray[i], "String %d: the intial value", i);
+		//printf("%s\n", theArray[i]);
+	}
+
+	if (bind(serverFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var))>=0) {
 		printf("nsocket has been created\n");
 		listen(serverFileDescriptor,2000); 
-		while(1)        //loop infinity
-		{
-			for(i=0;i<50;i++)      //can support 20 clients at a time
-			{
+		while(1) {
+			for(i=0;i<50;i++) {
 				clientFileDescriptor=accept(serverFileDescriptor,NULL,NULL);
 				printf("File descripter num %d\n",clientFileDescriptor);
 				printf("nConnected to client %d\n",clientFileDescriptor);
@@ -82,7 +95,7 @@ int main(int argc, char* argv[])
 		}
 		close(serverFileDescriptor);
 	}
-	else{
+	else {
 		printf("nsocket creation failed\n");
 	}
 	return 0;

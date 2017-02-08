@@ -32,6 +32,13 @@ void *ServerEcho(void *args)
 	// printf("nechoing back to client \n");
 
 
+<<<<<<< HEAD
+=======
+	read(clientFileDescriptor,str,20);
+	printf("nreading from client:%s\n",str);
+	write(clientFileDescriptor,str,20);
+	printf("nechoing back to client\n");
+>>>>>>> 69d7aad6ffe22a5bd10ce267a56c42295fda1d3a
 	close(clientFileDescriptor);
 }
 
@@ -44,7 +51,7 @@ int main(int argc, char* argv[])
 	int i;
 	pthread_t t[20];
 
-	sock_var.sin_addr.s_addr=inet_addr("127.0.0.1");
+	sock_var.sin_addr.s_addr;
 	sock_var.sin_port=3000;
 	sock_var.sin_family=AF_INET;
 	printf("Hello\n");

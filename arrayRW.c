@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 	for (i = 0; i < NUM_STR; i ++)
 	{
 		sprintf(theArray[i], "theArray[%d]: initial value", i);
-		printf("%s\n\n", theArray[i]);
+		printf("%s\n", theArray[i]);
 	}
    
 	thread_handles = malloc (thread_count*sizeof(pthread_t)); 

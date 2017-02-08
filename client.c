@@ -53,7 +53,7 @@ void *readWriteMessage(void* rank) {
 	long my_rank = (long) rank;
 	
 	// Find a random position in theArray for read or write
-	uint16_t pos = rand_r(&seed[my_rank]) % arraySize; //random position to read/write from in array
+	uint16_t pos = htons(rand_r(&seed[my_rank]) % arraySize); //random position to read/write from in array
 	int randNum = rand_r(&seed[my_rank]) % 20;	// write with 5% probability
 
 	uint8_t readOrWrite; //1 for write 0 for read
@@ -80,7 +80,8 @@ void *readWriteMessage(void* rank) {
 		} else {
 			readOrWrite = 0;
 			write(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite));
-			read(clientFileDescriptor, str_ser, sizeof(str_ser));
+			write(clientFileDescriptor, &pos, sizeof(pos));
+			//read(clientFileDescriptor, str_ser, sizeof(str_ser));
 		}
 	}
 	else{

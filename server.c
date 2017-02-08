@@ -13,7 +13,7 @@ void *ServerEcho(void *args)
 	//char str[20];
 
 	// recieve thead id
-	uint8_t isRead = 0;
+	uint8_t readOrWrite = 0;
 	uint16_t arrayPosNBO = 0;
 	uint16_t arrayPos = 0;
 	read(clientFileDescriptor,*readOrWrite,sizeof(readOrWrite));
@@ -25,20 +25,6 @@ void *ServerEcho(void *args)
 	}else{
 		printf("Write request\n");
 	}
-	
-	printf("array position: %d\n",(int) arrayPos);
-	// printf("nreading from client:%s \n",str);
-	// write(clientFileDescriptor,str,20);
-	// printf("nechoing back to client \n");
-
-
-<<<<<<< HEAD
-=======
-	read(clientFileDescriptor,str,20);
-	printf("nreading from client:%s\n",str);
-	write(clientFileDescriptor,str,20);
-	printf("nechoing back to client\n");
->>>>>>> 69d7aad6ffe22a5bd10ce267a56c42295fda1d3a
 	close(clientFileDescriptor);
 }
 

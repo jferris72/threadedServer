@@ -7,6 +7,9 @@
 #include<unistd.h>
 #include<pthread.h>
 
+long port;
+long arraySize;
+
 void *ServerEcho(void *args)
 {
 	int clientFileDescriptor=(int)args;
@@ -55,8 +58,11 @@ int main(int argc, char* argv[])
 	int i;
 	pthread_t t[20];
 
+	port = strtol(argv[1], NULL, 10);
+	arraySize = strtol(argv[2], NULL, 10);
+
 	sock_var.sin_addr.s_addr;
-	sock_var.sin_port=3000;
+	sock_var.sin_port=port;
 	sock_var.sin_family=AF_INET;
 	printf("Hello\n");
 

@@ -16,8 +16,8 @@ void *ServerEcho(void *args)
 	uint8_t isRead = 0;
 	uint16_t arrayPosNBO = 0;
 	uint16_t arrayPos = 0;
-	read(clientFileDescriptor,*readOrWrite,sizeof(readOrWrite));
-	read(clientFileDescriptor,*arrayPosNBO,sizeof(arrayPosNBO));
+	read(clientFileDescriptor,&isRead,sizeof(isRead));
+	read(clientFileDescriptor,&arrayPosNBO,sizeof(arrayPosNBO));
 	arrayPos = ntohs(arrayPosNBO);
 
 	if(isRead){
@@ -32,13 +32,13 @@ void *ServerEcho(void *args)
 	// printf("nechoing back to client \n");
 
 
-<<<<<<< HEAD
-=======
-	read(clientFileDescriptor,str,20);
-	printf("nreading from client:%s\n",str);
-	write(clientFileDescriptor,str,20);
-	printf("nechoing back to client\n");
->>>>>>> 69d7aad6ffe22a5bd10ce267a56c42295fda1d3a
+// // <<<<<<< HEAD
+// // =======
+// 	read(clientFileDescriptor,str,20);
+// 	printf("nreading from client:%s\n",str);
+// 	write(clientFileDescriptor,str,20);
+// 	printf("nechoing back to client\n");
+// >>>>>>> 69d7aad6ffe22a5bd10ce267a56c42295fda1d3a
 	close(clientFileDescriptor);
 }
 
@@ -62,10 +62,10 @@ int main(int argc, char* argv[])
 		listen(serverFileDescriptor,2000); 
 		while(1)        //loop infinity
 		{
-			for(i=0;i<1000;i++)      //can support 20 clients at a time
+			for(i=0;i<5;i++)      //can support 20 clients at a time
 			{
 				clientFileDescriptor=accept(serverFileDescriptor,NULL,NULL);
-				print("File descripter num %d\n",clientFileDescriptor);
+				printf("File descripter num %d\n",clientFileDescriptor);
 				printf("nConnected to client %d\n",clientFileDescriptor);
 				pthread_create(&t,NULL,ServerEcho,(void *)clientFileDescriptor);
 			}

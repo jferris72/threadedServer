@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 	int i;
 	double start, finish, elapsed;	
 
-	thread_count = 1000; 
+	thread_count = 5; 
 	port = strtol(argv[1], NULL, 10);
 	arraySize = strtol(argv[2], NULL, 10);
 	/* Intializes random number generators */
@@ -70,8 +70,9 @@ void *readWriteMessage(void* rank) {
 	sock_var.sin_port=port;
 // >>>>>>> 69d7aad6ffe22a5bd10ce267a56c42295fda1d3a
 	sock_var.sin_family=AF_INET;
-
-	if(connect(clientFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var))>=0) 
+	int errorcode = connect(clientFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var));
+	printf("error code no %d\n",errorcode);
+	if(errorcode >=0 ) 
 	{
 		if (randNum >= 19) { // 5% are write operations, others are reads
 			readOrWrite = 1;
@@ -80,7 +81,8 @@ void *readWriteMessage(void* rank) {
 		} else {
 			readOrWrite = 0;
 			write(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite));
-			read(clientFileDescriptor, str_ser, sizeof(str_ser));
+			write(clientFileDescriptor, &pos, sizeof(pos));
+			//read(clientFileDescriptor, str_ser, sizeof(str_ser));
 		}
 	}
 	else{

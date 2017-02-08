@@ -13,7 +13,7 @@ void *ServerEcho(void *args)
 	//char str[20];
 
 	// recieve thead id
-	uint8_t isRead = 0;
+	uint8_t readOrWrite = 0;
 	uint16_t arrayPosNBO = 0;
 	uint16_t arrayPos = 0;
 	read(clientFileDescriptor,&isRead,sizeof(isRead));

@@ -6,13 +6,14 @@
 #include<arpa/inet.h>
 #include<unistd.h>
 #include<pthread.h>
+#include<string.h>
 
 #define STR_LEN 64
 
 long port;
 long arraySize;
 char **theArray;
-pthread_mutex_t mutex;
+pthread_mutex_t *mutex;
 
 void *ServerEcho(void *args)
 {
@@ -31,29 +32,19 @@ void *ServerEcho(void *args)
 	arrayPos = ntohs(arrayPosNBO) % arraySize;
 
 	if (!isRead) {
+        pthread_mutex_lock(&mutex[arrayPos]);
 		send(clientFileDescriptor, theArray[arrayPos], STR_LEN, 0);		
-		//printf("Read request\n");
+		//printf("Read request %s\n", theArray[arrayPos]);
+        pthread_mutex_unlock(&mutex[arrayPos]);
 	} else {
-		pthread_mutex_lock(&mutex); 
+        pthread_mutex_lock(&mutex[arrayPos]);
 		//printf("Array index: %d\n", arrayPos);
-		sprintf(theArray[arrayPos],"String %d has been modified by a write request", arrayPos);
-		send(clientFileDescriptor, theArray[arrayPos], STR_LEN, 0);				
-		pthread_mutex_unlock(&mutex);
+        bzero(theArray[arrayPos], STR_LEN);
+		sprintf(theArray[arrayPos],"String %d has been modified by a write request", arrayPos);	
+        send(clientFileDescriptor, theArray[arrayPos], STR_LEN, 0);			
+		pthread_mutex_unlock(&mutex[arrayPos]);
 	}
-	
-	//printf("array position: %d\n",(int) arrayPos);
-	// printf("nreading from client:%s \n",str);
-	// write(clientFileDescriptor,str,20);
-	// printf("nechoing back to client \n");
 
-
-// // <<<<<<< HEAD
-// // =======
-// 	read(clientFileDescriptor,str,20);
-// 	printf("nreading from client:%s\n",str);
-// 	write(clientFileDescriptor,str,20);
-// 	printf("nechoing back to client\n");
-// >>>>>>> 69d7aad6ffe22a5bd10ce267a56c42295fda1d3a
 	close(clientFileDescriptor);
 }
 
@@ -64,7 +55,7 @@ int main(int argc, char* argv[])
 	int serverFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
 	int clientFileDescriptor;
 	int i;
-	pthread_t t[50];
+	pthread_t t[1000];
 
 	port = strtol(argv[1], NULL, 10);
 	arraySize = strtol(argv[2], NULL, 10);
@@ -75,8 +66,10 @@ int main(int argc, char* argv[])
 	printf("Hello\n");
 
 	theArray = malloc(sizeof(*theArray)*arraySize);
+    mutex = malloc(sizeof(mutex)*arraySize);
 	for (i = 0; i < arraySize; i++) {
 		theArray[i] = malloc(sizeof(*theArray[i]) * STR_LEN);
+        pthread_mutex_init(&mutex[i], NULL);
 	}
 
 	for (i = 0; i < arraySize; i ++) {
@@ -84,13 +77,11 @@ int main(int argc, char* argv[])
 		//printf("%s\n", theArray[i]);
 	}
 
-	pthread_mutex_init(&mutex, NULL);
-
 	if (bind(serverFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var))>=0) {
-		printf("nsocket has been created\n");
+		//printf("nsocket has been created\n");
 		listen(serverFileDescriptor,2000); 
 		while(1) {
-			for(i=0;i<50;i++) {
+			for(i=0;i<1000;i++) {
 				clientFileDescriptor=accept(serverFileDescriptor,NULL,NULL);
 				//printf("File descripter num %d\n",clientFileDescriptor);
 				//printf("nConnected to client %d\n",clientFileDescriptor);

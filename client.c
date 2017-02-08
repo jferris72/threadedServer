@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 	GET_TIME(finish);
 
 	elapsed = finish - start;
-
+	printf("Time elapsed: %f\n",elapsed);
 	free(thread_handles);
 
 	return 0;
@@ -64,16 +64,10 @@ void *readWriteMessage(void* rank) {
 	int clientFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
 	char str_ser[STR_LEN];
 
-// <<<<<<< HEAD
-// 	sock_var.sin_addr.s_addr=inet_addr("142.244.5.74");
-// 	sock_var.sin_port=2222;
-// =======
 	sock_var.sin_addr.s_addr=inet_addr("127.0.0.1");
 	sock_var.sin_port=port;
-// >>>>>>> 69d7aad6ffe22a5bd10ce267a56c42295fda1d3a
 	sock_var.sin_family=AF_INET;
 	int errorcode = connect(clientFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var));
-	pos = htons(pos);
 	//printf("error code no %d\n",errorcode);
 	if(errorcode >=0 ) 
 	{
@@ -81,12 +75,14 @@ void *readWriteMessage(void* rank) {
 			readOrWrite = 1;
 			send(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite),0);
 			send(clientFileDescriptor, &pos, sizeof(pos),0);
+			recv(clientFileDescriptor, str_ser, STR_LEN,0);
+			printf("%s\n",str_ser);
 		} else {
 			readOrWrite = 0;
 			send(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite),0);
 			send(clientFileDescriptor, &pos, sizeof(pos),0);
 			recv(clientFileDescriptor, str_ser, STR_LEN,0);
-			//printf("%s\n", str_ser);
+			printf("%s\n",str_ser);
 		}
 	}
 	else{

@@ -73,7 +73,8 @@ void *readWriteMessage(void* rank) {
 // >>>>>>> 69d7aad6ffe22a5bd10ce267a56c42295fda1d3a
 	sock_var.sin_family=AF_INET;
 	int errorcode = connect(clientFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var));
-	printf("error code no %d\n",errorcode);
+	pos = htons(pos);
+	//printf("error code no %d\n",errorcode);
 	if(errorcode >=0 ) 
 	{
 		if (randNum >= 19) { // 5% are write operations, others are reads
@@ -85,7 +86,7 @@ void *readWriteMessage(void* rank) {
 			send(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite),0);
 			send(clientFileDescriptor, &pos, sizeof(pos),0);
 			recv(clientFileDescriptor, str_ser, STR_LEN,0);
-			printf("%s\n", str_ser);
+			//printf("%s\n", str_ser);
 		}
 	}
 	else{

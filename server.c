@@ -21,8 +21,8 @@ void *ServerEcho(void *args)
 
 	// recieve thead id
 	char str_ser[STR_LEN];
-	bzero(str_ser, 5);
-	strncpy(str_ser, "hello", 5);
+	bzero(str_ser, STR_LEN);
+	strncpy(str_ser, "hello", STR_LEN);
 	uint8_t isRead = 0;
 	uint16_t arrayPosNBO = 0;
 	uint16_t arrayPos = 0;
@@ -35,6 +35,7 @@ void *ServerEcho(void *args)
 		printf("Read request\n");
 	} else {
 		pthread_mutex_lock(&mutex); 
+		printf("Array index: %d\n", arrayPos);
 		sprintf(theArray[arrayPos],"String %d has been modified by a write request", arrayPos);		
 		pthread_mutex_unlock(&mutex);
 	}
@@ -62,7 +63,7 @@ int main(int argc, char* argv[])
 	int serverFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
 	int clientFileDescriptor;
 	int i;
-	pthread_t t[20];
+	pthread_t t[50];
 
 	port = strtol(argv[1], NULL, 10);
 	arraySize = strtol(argv[2], NULL, 10);
@@ -82,6 +83,8 @@ int main(int argc, char* argv[])
 		//printf("%s\n", theArray[i]);
 	}
 
+	pthread_mutex_init(&mutex, NULL);
+
 	if (bind(serverFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var))>=0) {
 		printf("nsocket has been created\n");
 		listen(serverFileDescriptor,2000); 
@@ -98,5 +101,6 @@ int main(int argc, char* argv[])
 	else {
 		printf("nsocket creation failed\n");
 	}
+	pthread_mutex_destroy(&mutex);
 	return 0;
 }

@@ -13,20 +13,24 @@ void *ServerEcho(void *args)
 	//char str[20];
 
 	// recieve thead id
-	uint8_t readOrWrite = 0;
+	char str_ser[100];
+	bzero(str_ser, 100);
+	strncpy(str_ser, "hello\n", 100);
+	uint8_t isRead = 0;
 	uint16_t arrayPosNBO = 0;
 	uint16_t arrayPos = 0;
 	read(clientFileDescriptor,&isRead,sizeof(isRead));
 	read(clientFileDescriptor,&arrayPosNBO,sizeof(arrayPosNBO));
 	arrayPos = ntohs(arrayPosNBO);
 
-	if(isRead){
+	if(!isRead){
 		printf("Read request\n");
 	}else{
+		write(clientFileDescriptor, str_ser, sizeof(str_ser));
 		printf("Write request\n");
 	}
 	
-	printf("array position: %d\n",(int) arrayPos);
+	//printf("array position: %d\n",(int) arrayPos);
 	// printf("nreading from client:%s \n",str);
 	// write(clientFileDescriptor,str,20);
 	// printf("nechoing back to client \n");
@@ -62,7 +66,7 @@ int main(int argc, char* argv[])
 		listen(serverFileDescriptor,2000); 
 		while(1)        //loop infinity
 		{
-			for(i=0;i<5;i++)      //can support 20 clients at a time
+			for(i=0;i<50;i++)      //can support 20 clients at a time
 			{
 				clientFileDescriptor=accept(serverFileDescriptor,NULL,NULL);
 				printf("File descripter num %d\n",clientFileDescriptor);

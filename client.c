@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 	int i;
 	double start, finish, elapsed;	
 
-	thread_count = 5; 
+	thread_count = 1000; 
 	port = strtol(argv[1], NULL, 10);
 	arraySize = strtol(argv[2], NULL, 10);
 	/* Intializes random number generators */
@@ -60,7 +60,7 @@ void *readWriteMessage(void* rank) {
 
 	struct sockaddr_in sock_var;
 	int clientFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
-	char str_ser[20];
+	char str_ser[100];
 
 // <<<<<<< HEAD
 // 	sock_var.sin_addr.s_addr=inet_addr("142.244.5.74");
@@ -82,7 +82,8 @@ void *readWriteMessage(void* rank) {
 			readOrWrite = 0;
 			write(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite));
 			write(clientFileDescriptor, &pos, sizeof(pos));
-			//read(clientFileDescriptor, str_ser, sizeof(str_ser));
+			read(clientFileDescriptor, &str_ser, sizeof(str_ser));
+			printf("%s\n", str_ser);
 		}
 	}
 	else{

@@ -16,20 +16,20 @@ void *ServerEcho(void *args)
 	//char str[20];
 
 	// recieve thead id
-	char str_ser[100];
-	bzero(str_ser, 100);
-	strncpy(str_ser, "hello\n", 100);
+	char str_ser[5];
+	bzero(str_ser, 5);
+	strncpy(str_ser, "hello", 5);
 	uint8_t isRead = 0;
 	uint16_t arrayPosNBO = 0;
 	uint16_t arrayPos = 0;
-	read(clientFileDescriptor,&isRead,sizeof(isRead));
-	read(clientFileDescriptor,&arrayPosNBO,sizeof(arrayPosNBO));
+	recv(clientFileDescriptor,&isRead,sizeof(isRead), 0);
+	recv(clientFileDescriptor,&arrayPosNBO,sizeof(arrayPosNBO), 0);
 	arrayPos = ntohs(arrayPosNBO);
 
 	if(!isRead){
+		send(clientFileDescriptor, str_ser, 5, 0);		
 		printf("Read request\n");
 	}else{
-		write(clientFileDescriptor, str_ser, sizeof(str_ser));
 		printf("Write request\n");
 	}
 	

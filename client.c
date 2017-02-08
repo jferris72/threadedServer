@@ -60,7 +60,7 @@ void *readWriteMessage(void* rank) {
 
 	struct sockaddr_in sock_var;
 	int clientFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
-	char str_ser[100];
+	char str_ser[5];
 
 // <<<<<<< HEAD
 // 	sock_var.sin_addr.s_addr=inet_addr("142.244.5.74");
@@ -76,13 +76,13 @@ void *readWriteMessage(void* rank) {
 	{
 		if (randNum >= 19) { // 5% are write operations, others are reads
 			readOrWrite = 1;
-			write(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite));
-			write(clientFileDescriptor, &pos, sizeof(pos));
+			send(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite),0);
+			send(clientFileDescriptor, &pos, sizeof(pos),0);
 		} else {
 			readOrWrite = 0;
-			write(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite));
-			write(clientFileDescriptor, &pos, sizeof(pos));
-			read(clientFileDescriptor, &str_ser, sizeof(str_ser));
+			send(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite),0);
+			send(clientFileDescriptor, &pos, sizeof(pos),0);
+			recv(clientFileDescriptor, str_ser, 5,0);
 			printf("%s\n", str_ser);
 		}
 	}

@@ -10,6 +10,7 @@
 
 #define STR_LEN 64
 
+
 long port;
 long arraySize;
 char **theArray;
@@ -65,10 +66,10 @@ int main(int argc, char* argv[])
 	sock_var.sin_family=AF_INET;
 	printf("Hello\n");
 
-	theArray = malloc(sizeof(*theArray)*arraySize);
-    mutex = malloc(sizeof(mutex)*arraySize);
+	theArray = malloc(sizeof(char *)*arraySize);
+    mutex = malloc(sizeof(pthread_mutex_t)*arraySize);
 	for (i = 0; i < arraySize; i++) {
-		theArray[i] = malloc(sizeof(*theArray[i]) * STR_LEN);
+		theArray[i] = malloc(sizeof(char) * STR_LEN);
         pthread_mutex_init(&mutex[i], NULL);
 	}
 

@@ -86,7 +86,7 @@ void *readWriteMessage(void* rank) {
 		}
 	}
 	else{
-		printf("socket creation failed");
+		printf("socket creation failed\n");
 	}
 		
 	return NULL;

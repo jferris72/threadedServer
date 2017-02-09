@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 	int serverFileDescriptor=socket(AF_INET,SOCK_STREAM,0);
 	int clientFileDescriptor;
 	int i;
-	pthread_t t[50];
+	pthread_t t[1000];
 
 	port = strtol(argv[1], NULL, 10);
 	arraySize = strtol(argv[2], NULL, 10);
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
 		printf("nsocket has been created\n");
 		listen(serverFileDescriptor,2000); 
 		while(1) {
-			for(i=0;i<50;i++) {
+			for(i=0;i<1000;i++) {
 				clientFileDescriptor=accept(serverFileDescriptor,NULL,NULL);
 				//printf("File descripter num %d\n",clientFileDescriptor);
 				//printf("nConnected to client %d\n",clientFileDescriptor);
@@ -103,5 +103,10 @@ int main(int argc, char* argv[])
 		printf("nsocket creation failed\n");
 	}
 	pthread_mutex_destroy(&mutex);
+	for (i = 0; i < arraySize; i++) {
+		free(theArray[i]);
+	}
+
+	free(theArray);
 	return 0;
 }

@@ -95,5 +95,11 @@ int main(int argc, char* argv[])
 		printf("nsocket creation failed\n");
 	}
 	pthread_mutex_destroy(&mutex);
+
+	for (i = 0; i < arraySize; i++) {
+		free(theArray[i]);
+	}
+	free(theArray);
+	free(mutex);
 	return 0;
 }

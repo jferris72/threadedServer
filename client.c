@@ -46,8 +46,9 @@ int main(int argc, char* argv[])
 	elapsed = finish - start;
 	printf("Time elapsed: %f\n",elapsed);
 	free(thread_handles);
-
-	return 0;
+	free(seed);
+	
+	return 0; 
 }
 
 void *readWriteMessage(void* rank) {
@@ -65,7 +66,7 @@ void *readWriteMessage(void* rank) {
 	char str_ser[STR_LEN];
 
 	sock_var.sin_addr.s_addr=inet_addr("127.0.0.1");
-	sock_var.sin_port=port;
+	sock_var.sin_port = port;
 	sock_var.sin_family=AF_INET;
 	int errorcode = connect(clientFileDescriptor,(struct sockaddr*)&sock_var,sizeof(sock_var));
 	//printf("error code no %d\n",errorcode);

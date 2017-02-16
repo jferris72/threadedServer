@@ -44,7 +44,8 @@ int main(int argc, char* argv[])
 	GET_TIME(finish);
 
 	elapsed = finish - start;
-	printf("Time elapsed: %f\n",elapsed);
+	//printf("Time elapsed: %f\n",elapsed);
+	printf("%f\n",elapsed);
 	free(thread_handles);
 	free(seed);
 	
@@ -77,17 +78,17 @@ void *readWriteMessage(void* rank) {
 			send(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite),0);
 			send(clientFileDescriptor, &pos, sizeof(pos),0);
 			recv(clientFileDescriptor, str_ser, STR_LEN,0);
-			printf("%s\n",str_ser);
+			//printf("%s\n",str_ser);
 		} else {
 			readOrWrite = 0;
 			send(clientFileDescriptor, &readOrWrite, sizeof(readOrWrite),0);
 			send(clientFileDescriptor, &pos, sizeof(pos),0);
 			recv(clientFileDescriptor, str_ser, STR_LEN,0);
-			printf("%s\n",str_ser);
+			//printf("%s\n",str_ser);
 		}
 	}
 	else{
-		printf("socket creation failed\n");
+		//printf("socket creation failed\n");
 	}
 		
 	return NULL;

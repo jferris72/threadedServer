@@ -31,7 +31,9 @@ void *ServerEcho(void *args)
 	arrayPos = ntohs(arrayPosNBO) % arraySize;
 
 	if (!isRead) {
+		pthread_mutex_lock(&mutex);
 		send(clientFileDescriptor, theArray[arrayPos], STR_LEN, 0);		
+		pthread_mutex_unlock(&mutex);
 		//printf("Read request\n");
 	} else {
 		pthread_mutex_lock(&mutex); 

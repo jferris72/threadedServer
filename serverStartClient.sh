@@ -1,5 +1,5 @@
 #!/bin/bash
-for i in `seq 3000 3100`;
+for i in `seq 8000 8100`;
 do
-        ./server $i 10000 &
+        ./server2 $i 10 &
 done   

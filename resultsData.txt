@@ -1,0 +1,8 @@
+Server 1 size 10: 1.319
+Server 1 size 100: 1.259
+Server 1 size 1000: 1.406
+Server 1 size 10000: 1.244
+Server 2 size 10: 3.326
+Server 2 size 100: 3.483
+Server 2 size 1000: 3.363
+Server 2 size 10000: 3.272
